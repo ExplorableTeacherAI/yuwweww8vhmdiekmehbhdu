@@ -73,6 +73,48 @@ export interface VariableDefinition {
  *    { defaultValue: { x: 5, y: 10 }, type: 'object', schema: '{ x: number, y: number }' }
  */
 export const variableDefinitions: Record<string, VariableDefinition> = {
+    // Entries of the 2x2 matrix in the determinant diagonal cross
+    determinantEntryTopLeft: {
+        defaultValue: 3,
+        type: 'number',
+        label: 'Entry a (top left)',
+        description: 'Top-left entry of the 2x2 matrix in the determinant visual',
+        min: -5,
+        max: 5,
+        step: 1,
+        color: '#6366f1',
+    },
+    determinantEntryTopRight: {
+        defaultValue: 4,
+        type: 'number',
+        label: 'Entry b (top right)',
+        description: 'Top-right entry of the 2x2 matrix in the determinant visual',
+        min: -5,
+        max: 5,
+        step: 1,
+        color: '#f43f5e',
+    },
+    determinantEntryBottomLeft: {
+        defaultValue: 1,
+        type: 'number',
+        label: 'Entry c (bottom left)',
+        description: 'Bottom-left entry of the 2x2 matrix in the determinant visual',
+        min: -5,
+        max: 5,
+        step: 1,
+        color: '#f43f5e',
+    },
+    determinantEntryBottomRight: {
+        defaultValue: 2,
+        type: 'number',
+        label: 'Entry d (bottom right)',
+        description: 'Bottom-right entry of the 2x2 matrix in the determinant visual',
+        min: -5,
+        max: 5,
+        step: 1,
+        color: '#6366f1',
+    },
+
     // Sizes of the two matrices in the "When Can You Multiply?" size matcher
     firstMatrixRows: {
         defaultValue: 2,

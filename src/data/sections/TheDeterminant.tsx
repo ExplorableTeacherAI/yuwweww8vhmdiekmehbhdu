@@ -1,9 +1,10 @@
 import { type ReactElement } from "react";
 import { Block } from "@/components/templates";
 import { StackLayout } from "@/components/layouts";
-import { EditableH2, EditableParagraph } from "@/components/atoms";
+import { EditableH2, EditableH3, EditableParagraph, InlineFormula } from "@/components/atoms";
 import { FormulaBlock } from "@/components/molecules";
-import { VisualOptionCards } from "@/components/organisms";
+import { DeterminantDiagonals } from "./visuals/DeterminantDiagonals";
+import { NumericQuestion } from "./practice/PracticeQuestions";
 
 export const theDeterminantBlocks: ReactElement[] = [
     <StackLayout key="layout-determinant-heading" maxWidth="xl">
@@ -31,46 +32,84 @@ export const theDeterminantBlocks: ReactElement[] = [
     </StackLayout>,
 
     <StackLayout key="layout-determinant-visual" maxWidth="xl">
-        <Block id="determinant-visual" padding="sm">
-            <VisualOptionCards
-                blockId="determinant-visual"
-                intro="Pick how your students will see what the determinant of a 2x2 matrix measures."
-                cards={[
-                    {
-                        id: "area-scaling",
-                        title: "A unit square stretched by the matrix, with its new area displayed",
-                        looks: "A one-by-one square on a grid and the tilted parallelogram the matrix turns it into, with the area shown next to the value of ad minus bc.",
-                        manipulate: "Students drag the four entries and watch the parallelogram and its area change together.",
-                        reveals: "The determinant is the factor by which areas are stretched, and it flattens to zero when the shape collapses to a line.",
-                        recommended: true,
-                    },
-                    {
-                        id: "diagonal-cross",
-                        title: "The two diagonals highlighted as one product minus the other",
-                        looks: "The four entries with the main diagonal joined in one colour and the other diagonal in another, each product shown and then subtracted.",
-                        manipulate: "Students change any entry and watch both products and the difference update.",
-                        reveals: "The determinant is always ad minus bc, and the order of the subtraction is what makes the sign meaningful.",
-                    },
-                    {
-                        id: "zero-hunt",
-                        title: "A hunt for matrices whose determinant lands on zero",
-                        looks: "A 2x2 matrix with its determinant shown large, marked clearly when the value reaches zero.",
-                        manipulate: "Students adjust the entries and try to make the determinant zero, then compare the matrices that manage it.",
-                        reveals: "Determinant zero happens exactly when one row is a multiple of the other, and those matrices behave differently from the rest.",
-                    },
-                ]}
-            />
+        <Block id="determinant-visual" padding="sm" hasVisualization>
+            <DeterminantDiagonals />
         </Block>
     </StackLayout>,
 
     <StackLayout key="layout-determinant-summary" maxWidth="xl">
         <Block id="determinant-summary" padding="sm">
             <EditableParagraph id="para-determinant-summary" blockId="determinant-summary">
-                Multiply along the main diagonal, multiply along the other
-                diagonal, then subtract in that order. Some matrices give a
-                determinant of zero, and those turn out to be a special case
-                worth watching.
+                Multiply along the solid diagonal, multiply along the dashed
+                one, then subtract in that order. Move the sliders until the two
+                products are equal and the determinant lands on zero: those
+                matrices behave very differently from the rest, as you are about
+                to see.
             </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-determinant-practice-heading" maxWidth="xl">
+        <Block id="determinant-practice-heading" padding="sm">
+            <EditableH3 id="h3-determinant-practice-heading" blockId="determinant-practice-heading">
+                Your turn
+            </EditableH3>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-determinant-practice-value-prompt" maxWidth="xl">
+        <Block id="determinant-practice-value-prompt" padding="sm">
+            <EditableParagraph
+                id="para-determinant-practice-value-prompt"
+                blockId="determinant-practice-value-prompt"
+            >
+                What is the determinant of the matrix with top row{" "}
+                <InlineFormula latex="(5, -3)" /> and bottom row{" "}
+                <InlineFormula latex="(2, 4)" />?
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-determinant-practice-value" maxWidth="xl">
+        <Block id="determinant-practice-value" padding="sm">
+            <NumericQuestion
+                answer={26}
+                placeholder="Determinant"
+                successFeedback="Correct. The solid diagonal gives 20, the dashed one gives -6, and subtracting a negative pushes the determinant up to 26."
+                hints={[
+                    "Not yet. Work out both products first: a times d, then b times c, keeping the minus sign with the -3.",
+                    "You should have 5 x 4 = 20 and (-3) x 2 = -6. Now do 20 minus (-6) and watch that double negative.",
+                    "20 - (-6) = 26. Set the sliders above to 5, -3, 2 and 4 and compare the two coloured products.",
+                ]}
+            />
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-determinant-practice-zero-prompt" maxWidth="xl">
+        <Block id="determinant-practice-zero-prompt" padding="sm">
+            <EditableParagraph
+                id="para-determinant-practice-zero-prompt"
+                blockId="determinant-practice-zero-prompt"
+            >
+                A matrix has top row <InlineFormula latex="(k, 6)" /> and bottom
+                row <InlineFormula latex="(2, 4)" />. What value of{" "}
+                <InlineFormula latex="k" /> makes its determinant zero?
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-determinant-practice-zero" maxWidth="xl">
+        <Block id="determinant-practice-zero" padding="sm">
+            <NumericQuestion
+                answer={3}
+                placeholder="Value of k"
+                successFeedback="Correct. With k = 3 both diagonals give 12, so the determinant is zero and the top row is exactly 1.5 times the bottom row."
+                hints={[
+                    "A determinant of zero means the two diagonal products are equal. Write both products in terms of k.",
+                    "The solid diagonal gives 4k and the dashed one gives 12. Now solve 4k = 12.",
+                    "k = 3. Set the sliders above to 3, 6, 2, 4 and watch the zero-determinant message appear.",
+                ]}
+            />
         </Block>
     </StackLayout>,
 ];
