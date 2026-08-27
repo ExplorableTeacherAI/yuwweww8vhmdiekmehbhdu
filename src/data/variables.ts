@@ -73,6 +73,48 @@ export interface VariableDefinition {
  *    { defaultValue: { x: 5, y: 10 }, type: 'object', schema: '{ x: number, y: number }' }
  */
 export const variableDefinitions: Record<string, VariableDefinition> = {
+    // Row vectors drawn as draggable arrows in the "no inverse" visual
+    firstRowVectorX: {
+        defaultValue: 3,
+        type: 'number',
+        label: 'First row, across',
+        description: 'Horizontal part of the first row vector',
+        min: -4,
+        max: 4,
+        step: 0.5,
+        color: '#6366f1',
+    },
+    firstRowVectorY: {
+        defaultValue: 1,
+        type: 'number',
+        label: 'First row, up',
+        description: 'Vertical part of the first row vector',
+        min: -4,
+        max: 4,
+        step: 0.5,
+        color: '#6366f1',
+    },
+    secondRowVectorX: {
+        defaultValue: 1,
+        type: 'number',
+        label: 'Second row, across',
+        description: 'Horizontal part of the second row vector',
+        min: -4,
+        max: 4,
+        step: 0.5,
+        color: '#f43f5e',
+    },
+    secondRowVectorY: {
+        defaultValue: 2,
+        type: 'number',
+        label: 'Second row, up',
+        description: 'Vertical part of the second row vector',
+        min: -4,
+        max: 4,
+        step: 0.5,
+        color: '#f43f5e',
+    },
+
     // Entries of the 2x2 matrix in the inverse builder
     inverseEntryTopLeft: {
         defaultValue: 4,
