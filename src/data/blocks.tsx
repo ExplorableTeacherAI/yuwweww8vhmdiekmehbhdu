@@ -2,6 +2,15 @@ import { type ReactElement } from "react";
 // import { Block } from "@/components/templates";
 // import { StackLayout, SplitLayout, GridLayout } from "@/components/layouts";
 
+import { workingWithMatricesBlocks } from "./sections/WorkingWithMatrices";
+import { rowMeetsColumnBlocks } from "./sections/RowMeetsColumn";
+import { whenCanYouMultiplyBlocks } from "./sections/WhenCanYouMultiply";
+import { doesOrderMatterBlocks } from "./sections/DoesOrderMatter";
+import { theDeterminantBlocks } from "./sections/TheDeterminant";
+import { buildingTheInverseBlocks } from "./sections/BuildingTheInverse";
+import { whenThereIsNoInverseBlocks } from "./sections/WhenThereIsNoInverse";
+import { wrappingUpBlocks } from "./sections/WrappingUp";
+
 // Initialize variables and their colors from this file's variable definitions
 import { useVariableStore, initializeVariableColors } from "@/stores";
 import { getDefaultValues, variableDefinitions } from "./variables";
@@ -74,5 +83,12 @@ initializeVariableColors(variableDefinitions);
  */
 
 export const blocks: ReactElement[] = [
-    // Start adding your blocks here!
+    ...workingWithMatricesBlocks,
+    ...rowMeetsColumnBlocks,
+    ...whenCanYouMultiplyBlocks,
+    ...doesOrderMatterBlocks,
+    ...theDeterminantBlocks,
+    ...buildingTheInverseBlocks,
+    ...whenThereIsNoInverseBlocks,
+    ...wrappingUpBlocks,
 ];
