@@ -34,13 +34,13 @@ export const whenCanYouMultiplyBlocks: ReactElement[] = [
     <StackLayout key="layout-size-rule-summary" maxWidth="xl">
         <Block id="size-rule-summary" padding="sm">
             <EditableParagraph id="para-size-rule-summary" blockId="size-rule-summary">
-                The two touching edges are the columns of the first matrix and
-                the rows of the second, and they must be equal. The outer edges
-                survive into the answer, so a{" "}
+                Write the two sizes side by side. The inner pair, shown in
+                green, must be equal or there is no product at all. The outer
+                pair, shown in purple, travels straight into the answer: rows
+                from the first matrix, columns from the second. So a{" "}
                 <InlineFormula latex="2 \times 3" /> times a{" "}
                 <InlineFormula latex="3 \times 4" /> gives a{" "}
-                <InlineFormula latex="2 \times 4" />. Write both sizes down
-                before you calculate anything.
+                <InlineFormula latex="2 \times 4" />.
             </EditableParagraph>
         </Block>
     </StackLayout>,
