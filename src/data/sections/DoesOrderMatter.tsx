@@ -21,7 +21,8 @@ export const doesOrderMatterBlocks: ReactElement[] = [
                 With ordinary numbers, <InlineFormula latex="7 \times 4" /> and{" "}
                 <InlineFormula latex="4 \times 7" /> agree. A matrix can turn or
                 stretch a shape on a grid, much like a move in a game character
-                editor, so try the same two moves in each order below.
+                editor, so play the same two moves in each order below and watch
+                the flags separate.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -35,8 +36,9 @@ export const doesOrderMatterBlocks: ReactElement[] = [
     <StackLayout key="layout-order-summary" maxWidth="xl">
         <Block id="order-summary" padding="sm">
             <EditableParagraph id="para-order-summary" blockId="order-summary">
-                The two flags end up in different places, and the two product
-                matrices underneath them are different too. Swapping the
+                Drag the slider slowly and the two flags part company at the
+                very first move; by the end they sit in different places, and
+                the two product matrices underneath them differ too. Swapping the
                 matrices swaps which rows meet which columns, so{" "}
                 <InlineFormula latex="AB" /> and{" "}
                 <InlineFormula latex="BA" /> are two separate calculations.

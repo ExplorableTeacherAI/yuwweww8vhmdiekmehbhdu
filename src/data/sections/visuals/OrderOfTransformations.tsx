@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Button } from "@/components/atoms";
+import { useEffect, useRef, useState } from "react";
+import { Button, Slider } from "@/components/atoms";
 
 type Matrix = [[number, number], [number, number]];
 type Point = [number, number];
@@ -13,6 +13,11 @@ const TURN: Matrix = [
 /** Stretch of 2 in the horizontal direction. */
 const STRETCH: Matrix = [
     [2, 0],
+    [0, 1],
+];
+
+const IDENTITY: Matrix = [
+    [1, 0],
     [0, 1],
 ];
 
@@ -42,22 +47,41 @@ const multiply = (left: Matrix, right: Matrix): Matrix => [
     ],
 ];
 
+const blend = (from: Matrix, to: Matrix, t: number): Matrix => [
+    [from[0][0] + (to[0][0] - from[0][0]) * t, from[0][1] + (to[0][1] - from[0][1]) * t],
+    [from[1][0] + (to[1][0] - from[1][0]) * t, from[1][1] + (to[1][1] - from[1][1]) * t],
+];
+
+/** The matrix in force at a point of the walkthrough, 0 to 100. */
+const stageMatrix = (first: Matrix, second: Matrix, progress: number): Matrix => {
+    const combined = multiply(second, first);
+    if (progress <= 50) return blend(IDENTITY, first, progress / 50);
+    return blend(first, combined, (progress - 50) / 50);
+};
+
 const UNIT = 26;
 const RANGE = 4;
 const PAD = 26;
 const SIZE = 2 * RANGE * UNIT + 2 * PAD;
 const toScreen = ([x, y]: Point) => [PAD + (x + RANGE) * UNIT, PAD + (RANGE - y) * UNIT];
+const show = (value: number) => (Math.round(value * 100) / 100).toFixed(1);
+
+const STAGES = [
+    { at: 0, label: "Start", note: "the flag as it is" },
+    { at: 50, label: "After the first move", note: "one matrix applied" },
+    { at: 100, label: "After both moves", note: "both matrices applied" },
+];
 
 interface GridPanelProps {
     title: string;
     subtitle: string;
-    shape: Point[];
-    accent: string;
-    resultLabel: string;
     matrix: Matrix;
+    accent: string;
+    caption: string;
 }
 
-const GridPanel = ({ title, subtitle, shape, accent, resultLabel, matrix }: GridPanelProps) => {
+const GridPanel = ({ title, subtitle, matrix, accent, caption }: GridPanelProps) => {
+    const shape = FLAG.map((point) => apply(matrix, point));
     const points = shape.map((point) => toScreen(point).join(",")).join(" ");
     const original = FLAG.map((point) => toScreen(point).join(",")).join(" ");
     const ticks = Array.from({ length: 2 * RANGE + 1 }, (_, index) => index - RANGE);
@@ -92,12 +116,12 @@ const GridPanel = ({ title, subtitle, shape, accent, resultLabel, matrix }: Grid
                 <polygon points={original} fill="none" stroke="#cbd5e1" strokeWidth={1.5} strokeDasharray="4 3" />
                 <polygon points={points} fill={accent} fillOpacity={0.28} stroke={accent} strokeWidth={2} />
             </svg>
-            <div className="text-center text-xs text-slate-600">
+            <div className="text-center text-xs">
                 <div className="font-semibold" style={{ color: accent }}>
-                    {resultLabel}
+                    {caption}
                 </div>
-                <div className="font-mono">
-                    [{matrix[0][0]} {matrix[0][1]}] [{matrix[1][0]} {matrix[1][1]}]
+                <div className="font-mono text-slate-500">
+                    [{show(matrix[0][0])} {show(matrix[0][1])}] [{show(matrix[1][0])} {show(matrix[1][1])}]
                 </div>
             </div>
         </div>
@@ -105,50 +129,116 @@ const GridPanel = ({ title, subtitle, shape, accent, resultLabel, matrix }: Grid
 };
 
 export const OrderOfTransformations = () => {
-    const [step, setStep] = useState(2);
+    const [progress, setProgress] = useState(100);
+    const [playing, setPlaying] = useState(false);
+    const frame = useRef<number | null>(null);
 
-    const stretchThenTurn = [FLAG, FLAG.map((p) => apply(STRETCH, p)), FLAG.map((p) => apply(multiply(TURN, STRETCH), p))];
-    const turnThenStretch = [FLAG, FLAG.map((p) => apply(TURN, p)), FLAG.map((p) => apply(multiply(STRETCH, TURN), p))];
+    useEffect(() => {
+        if (!playing) return;
+        const tick = () => {
+            setProgress((current) => {
+                if (current >= 100) {
+                    setPlaying(false);
+                    return 100;
+                }
+                return Math.min(100, current + 1);
+            });
+            frame.current = requestAnimationFrame(tick);
+        };
+        frame.current = requestAnimationFrame(tick);
+        return () => {
+            if (frame.current !== null) cancelAnimationFrame(frame.current);
+        };
+    }, [playing]);
 
-    const stepLabels = ["Start", "After the first step", "After both steps"];
+    const stretchThenTurn = stageMatrix(STRETCH, TURN, progress);
+    const turnThenStretch = stageMatrix(TURN, STRETCH, progress);
+
+    const stageNote =
+        progress === 0
+            ? "The flag has not moved yet."
+            : progress < 50
+              ? "The first move is under way in each panel, and they are already different moves."
+              : progress === 50
+                ? "One move done. On the left the flag has been stretched; on the right it has been turned."
+                : progress < 100
+                  ? "The second move is under way in each panel."
+                  : "Both moves done. Compare where the two flags have landed.";
 
     return (
         <div className="w-full space-y-4 rounded-lg border border-slate-200 bg-white p-4">
             <div className="flex flex-wrap items-center justify-center gap-2">
-                {stepLabels.map((label, index) => (
+                {STAGES.map((stage) => (
                     <Button
-                        key={label}
+                        key={stage.label}
                         size="sm"
-                        variant={step === index ? "default" : "outline"}
-                        onClick={() => setStep(index)}
+                        variant={progress === stage.at ? "default" : "outline"}
+                        onClick={() => {
+                            setPlaying(false);
+                            setProgress(stage.at);
+                        }}
                     >
-                        {label}
+                        {stage.label}
                     </Button>
                 ))}
+                <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                        if (playing) {
+                            setPlaying(false);
+                            return;
+                        }
+                        setProgress(0);
+                        setPlaying(true);
+                    }}
+                >
+                    {playing ? "Pause" : "Play both moves"}
+                </Button>
+            </div>
+
+            <div className="mx-auto w-full max-w-md space-y-1">
+                <Slider
+                    value={[progress]}
+                    min={0}
+                    max={100}
+                    step={1}
+                    onValueChange={([next]) => {
+                        setPlaying(false);
+                        setProgress(next);
+                    }}
+                />
+                <div className="flex justify-between text-[11px] text-slate-500">
+                    {STAGES.map((stage) => (
+                        <span key={stage.label}>{stage.note}</span>
+                    ))}
+                </div>
             </div>
 
             <div className="flex flex-wrap items-start justify-center gap-8">
                 <GridPanel
                     title="Stretch first, then turn"
                     subtitle="the product R S"
-                    shape={stretchThenTurn[step]}
+                    matrix={stretchThenTurn}
                     accent="#6366f1"
-                    resultLabel={step === 2 ? "R S" : stepLabels[step]}
-                    matrix={multiply(TURN, STRETCH)}
+                    caption={progress === 100 ? "R S" : "part way through"}
                 />
                 <GridPanel
                     title="Turn first, then stretch"
                     subtitle="the product S R"
-                    shape={turnThenStretch[step]}
+                    matrix={turnThenStretch}
                     accent="#f43f5e"
-                    resultLabel={step === 2 ? "S R" : stepLabels[step]}
-                    matrix={multiply(STRETCH, TURN)}
+                    caption={progress === 100 ? "S R" : "part way through"}
                 />
             </div>
 
             <div className="rounded-md bg-slate-50 px-4 py-2 text-center text-sm text-slate-600">
-                R is a quarter turn anticlockwise and S is a stretch of 2 sideways. The dashed
-                outline is the starting flag.
+                {stageNote}
+            </div>
+
+            <div className="text-center text-xs text-slate-500">
+                R is a quarter turn anticlockwise and S is a stretch of 2 sideways. The dashed outline is
+                the starting flag.
             </div>
         </div>
     );
