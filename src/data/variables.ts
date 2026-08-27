@@ -73,6 +73,48 @@ export interface VariableDefinition {
  *    { defaultValue: { x: 5, y: 10 }, type: 'object', schema: '{ x: number, y: number }' }
  */
 export const variableDefinitions: Record<string, VariableDefinition> = {
+    // Sizes of the two matrices in the "When Can You Multiply?" size matcher
+    firstMatrixRows: {
+        defaultValue: 2,
+        type: 'number',
+        label: 'Rows of the first matrix',
+        description: 'Number of rows in the left matrix of the size matcher',
+        min: 1,
+        max: 4,
+        step: 1,
+        color: '#6366f1',
+    },
+    firstMatrixColumns: {
+        defaultValue: 3,
+        type: 'number',
+        label: 'Columns of the first matrix',
+        description: 'Number of columns in the left matrix of the size matcher',
+        min: 1,
+        max: 4,
+        step: 1,
+        color: '#6366f1',
+    },
+    secondMatrixRows: {
+        defaultValue: 3,
+        type: 'number',
+        label: 'Rows of the second matrix',
+        description: 'Number of rows in the right matrix of the size matcher',
+        min: 1,
+        max: 4,
+        step: 1,
+        color: '#f43f5e',
+    },
+    secondMatrixColumns: {
+        defaultValue: 4,
+        type: 'number',
+        label: 'Columns of the second matrix',
+        description: 'Number of columns in the right matrix of the size matcher',
+        min: 1,
+        max: 4,
+        step: 1,
+        color: '#f43f5e',
+    },
+
     // ========================================
     // ADD YOUR VARIABLES HERE
     // ========================================

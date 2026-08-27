@@ -1,8 +1,9 @@
 import { type ReactElement } from "react";
 import { Block } from "@/components/templates";
 import { StackLayout } from "@/components/layouts";
-import { EditableH2, EditableParagraph, InlineFormula } from "@/components/atoms";
-import { VisualOptionCards } from "@/components/organisms";
+import { EditableH2, EditableH3, EditableParagraph, InlineFormula } from "@/components/atoms";
+import { MatrixSizeMatcher } from "./visuals/MatrixSizeMatcher";
+import { ChoiceQuestion } from "./practice/PracticeQuestions";
 
 export const whenCanYouMultiplyBlocks: ReactElement[] = [
     <StackLayout key="layout-size-rule-heading" maxWidth="xl">
@@ -18,58 +19,138 @@ export const whenCanYouMultiplyBlocks: ReactElement[] = [
             <EditableParagraph id="para-size-rule-idea" blockId="size-rule-idea">
                 A row can only meet a column if they hold the same count of
                 numbers. Three sales figures need three prices; three sales
-                figures and four prices leave a number with no partner. So a{" "}
-                <InlineFormula latex="2 \times 3" /> matrix multiplies a{" "}
-                <InlineFormula latex="3 \times 4" /> matrix, but not every pair
-                works.
+                figures and four prices leave a number with no partner. Drag the
+                sliders below and find out which pairs of matrices fit together.
             </EditableParagraph>
         </Block>
     </StackLayout>,
 
     <StackLayout key="layout-size-rule-visual" maxWidth="xl">
-        <Block id="size-rule-visual" padding="sm">
-            <VisualOptionCards
-                blockId="size-rule-visual"
-                intro="Pick how your students will discover which pairs of matrices can be multiplied."
-                cards={[
-                    {
-                        id: "size-matcher",
-                        title: "A size matcher where the two inner numbers must lock together",
-                        looks: "Two size labels such as 2 x 3 and 3 x 4 written side by side, with the two inner numbers joined when they agree and a clear break when they do not. The size of the answer is shown from the two outer numbers.",
-                        manipulate: "Students set the rows and columns of each matrix and see instantly whether the pair locks and what size the answer is.",
-                        reveals: "The inner numbers must be equal, and the outer numbers give the size of the answer.",
-                        targetsMisconception: "Students think any two matrices can be multiplied, and get the size of the answer wrong",
-                        recommended: true,
-                    },
-                    {
-                        id: "shape-blocks",
-                        title: "Two rectangles that only fit together when their touching edges are equal",
-                        looks: "Each matrix drawn as a rectangle whose width and height are its columns and rows. The two rectangles slide together and either join cleanly or leave a visible gap.",
-                        manipulate: "Students resize either rectangle and watch the joined shape, which shows the answer's size, appear or fail to form.",
-                        reveals: "The answer inherits the outer edges of the two rectangles, so its size is rows of the first by columns of the second.",
-                        targetsMisconception: "Students get the size of the answer matrix wrong",
-                    },
-                    {
-                        id: "pairing-check",
-                        title: "A row and a column lined up so leftover numbers are visible",
-                        looks: "One row of the first matrix stacked against one column of the second, with the paired numbers linked and any unpaired numbers left hanging.",
-                        manipulate: "Students change how many numbers each holds and see the pairing succeed or break down.",
-                        reveals: "Multiplication is impossible exactly when a number is left without a partner.",
-                        targetsMisconception: "Students think any two matrices can be multiplied",
-                    },
-                ]}
-            />
+        <Block id="size-rule-visual" padding="sm" hasVisualization>
+            <MatrixSizeMatcher />
         </Block>
     </StackLayout>,
 
     <StackLayout key="layout-size-rule-summary" maxWidth="xl">
         <Block id="size-rule-summary" padding="sm">
             <EditableParagraph id="para-size-rule-summary" blockId="size-rule-summary">
-                Write the two sizes next to each other before you calculate
-                anything. The inner pair decides whether the product exists;
-                the outer pair tells you the size of the answer. It is worth
-                doing this check every single time.
+                The two touching edges are the columns of the first matrix and
+                the rows of the second, and they must be equal. The outer edges
+                survive into the answer, so a{" "}
+                <InlineFormula latex="2 \times 3" /> times a{" "}
+                <InlineFormula latex="3 \times 4" /> gives a{" "}
+                <InlineFormula latex="2 \times 4" />. Write both sizes down
+                before you calculate anything.
             </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-size-rule-practice-heading" maxWidth="xl">
+        <Block id="size-rule-practice-heading" padding="sm">
+            <EditableH3 id="h3-size-rule-practice-heading" blockId="size-rule-practice-heading">
+                Your turn
+            </EditableH3>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-size-rule-practice-size-prompt" maxWidth="xl">
+        <Block id="size-rule-practice-size-prompt" padding="sm">
+            <EditableParagraph
+                id="para-size-rule-practice-size-prompt"
+                blockId="size-rule-practice-size-prompt"
+            >
+                A <InlineFormula latex="4 \times 2" /> matrix is multiplied by a{" "}
+                <InlineFormula latex="2 \times 5" /> matrix. What size is the
+                answer?
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-size-rule-practice-size" maxWidth="xl">
+        <Block id="size-rule-practice-size" padding="sm">
+            <ChoiceQuestion
+                options={[
+                    {
+                        id: "four-by-five",
+                        label: <InlineFormula latex="4 \times 5" />,
+                        correct: true,
+                        feedback:
+                            "Correct. The inner 2s matched, so the product exists, and the outer numbers 4 and 5 became the size of the answer.",
+                    },
+                    {
+                        id: "two-by-two",
+                        label: <InlineFormula latex="2 \times 2" />,
+                        feedback:
+                            "Those are the two inner numbers. They decide whether you may multiply, not how big the answer is. Set the sliders above to 4 x 2 and 2 x 5 and look at the answer shape.",
+                    },
+                    {
+                        id: "five-by-four",
+                        label: <InlineFormula latex="5 \times 4" />,
+                        feedback:
+                            "Right numbers, wrong way round. The rows always come from the first matrix. Check the line under the answer shape above.",
+                    },
+                    {
+                        id: "impossible",
+                        label: "These cannot be multiplied",
+                        feedback:
+                            "Look again at the touching edges: the columns of the first and the rows of the second. Set the sliders to 4 x 2 and 2 x 5 and see whether they lock together.",
+                    },
+                ]}
+            />
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-size-rule-practice-possible-prompt" maxWidth="xl">
+        <Block id="size-rule-practice-possible-prompt" padding="sm">
+            <EditableParagraph
+                id="para-size-rule-practice-possible-prompt"
+                blockId="size-rule-practice-possible-prompt"
+            >
+                Which one of these products can actually be worked out?
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-size-rule-practice-possible" maxWidth="xl">
+        <Block id="size-rule-practice-possible" padding="sm">
+            <ChoiceQuestion
+                options={[
+                    {
+                        id: "three-one-times-one-four",
+                        label: (
+                            <span>
+                                a <InlineFormula latex="3 \times 1" /> matrix times a{" "}
+                                <InlineFormula latex="1 \times 4" /> matrix
+                            </span>
+                        ),
+                        correct: true,
+                        feedback:
+                            "Yes. The touching edges are both 1, so each row of one number meets each column of one number, and the answer is 3 x 4.",
+                    },
+                    {
+                        id: "same-size-pair",
+                        label: (
+                            <span>
+                                a <InlineFormula latex="2 \times 4" /> matrix times a{" "}
+                                <InlineFormula latex="2 \times 4" /> matrix
+                            </span>
+                        ),
+                        feedback:
+                            "Equal sizes let you add two matrices, but multiplying needs the columns of the first to match the rows of the second: here 4 against 2. Try those sliders above and watch the gap appear.",
+                    },
+                    {
+                        id: "mismatched-inner",
+                        label: (
+                            <span>
+                                a <InlineFormula latex="3 \times 2" /> matrix times a{" "}
+                                <InlineFormula latex="3 \times 2" /> matrix
+                            </span>
+                        ),
+                        feedback:
+                            "Check the inner numbers only: 2 against 3. One number in every row would be left without a partner. Set this pair on the sliders above to see it.",
+                    },
+                ]}
+            />
         </Block>
     </StackLayout>,
 ];
