@@ -73,6 +73,48 @@ export interface VariableDefinition {
  *    { defaultValue: { x: 5, y: 10 }, type: 'object', schema: '{ x: number, y: number }' }
  */
 export const variableDefinitions: Record<string, VariableDefinition> = {
+    // Entries of the 2x2 matrix in the inverse builder
+    inverseEntryTopLeft: {
+        defaultValue: 4,
+        type: 'number',
+        label: 'Entry a of the matrix being inverted',
+        description: 'Top-left entry in the inverse builder',
+        min: -6,
+        max: 6,
+        step: 1,
+        color: '#6366f1',
+    },
+    inverseEntryTopRight: {
+        defaultValue: 7,
+        type: 'number',
+        label: 'Entry b of the matrix being inverted',
+        description: 'Top-right entry in the inverse builder',
+        min: -6,
+        max: 6,
+        step: 1,
+        color: '#f59e0b',
+    },
+    inverseEntryBottomLeft: {
+        defaultValue: 2,
+        type: 'number',
+        label: 'Entry c of the matrix being inverted',
+        description: 'Bottom-left entry in the inverse builder',
+        min: -6,
+        max: 6,
+        step: 1,
+        color: '#f59e0b',
+    },
+    inverseEntryBottomRight: {
+        defaultValue: 6,
+        type: 'number',
+        label: 'Entry d of the matrix being inverted',
+        description: 'Bottom-right entry in the inverse builder',
+        min: -6,
+        max: 6,
+        step: 1,
+        color: '#6366f1',
+    },
+
     // Entries of the 2x2 matrix in the determinant diagonal cross
     determinantEntryTopLeft: {
         defaultValue: 3,

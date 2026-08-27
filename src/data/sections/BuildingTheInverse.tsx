@@ -1,9 +1,10 @@
 import { type ReactElement } from "react";
 import { Block } from "@/components/templates";
 import { StackLayout } from "@/components/layouts";
-import { EditableH2, EditableParagraph, InlineFormula } from "@/components/atoms";
+import { EditableH2, EditableH3, EditableParagraph, InlineFormula } from "@/components/atoms";
 import { FormulaBlock } from "@/components/molecules";
-import { VisualOptionCards } from "@/components/organisms";
+import { InverseBuilder } from "./visuals/InverseBuilder";
+import { ChoiceQuestion, NumericQuestion } from "./practice/PracticeQuestions";
 
 export const buildingTheInverseBlocks: ReactElement[] = [
     <StackLayout key="layout-inverse-heading" maxWidth="xl">
@@ -33,50 +34,110 @@ export const buildingTheInverseBlocks: ReactElement[] = [
     </StackLayout>,
 
     <StackLayout key="layout-inverse-visual" maxWidth="xl">
-        <Block id="inverse-visual" padding="sm">
-            <VisualOptionCards
-                blockId="inverse-visual"
-                intro="Pick how your students will build the inverse of a 2x2 matrix."
-                cards={[
-                    {
-                        id: "three-step-builder",
-                        title: "A three-step builder: swap, negate, then divide",
-                        looks: "The original matrix beside a working copy that changes one step at a time, with the entries that moved or changed sign marked, and the determinant shown as the divider in the final step.",
-                        manipulate: "Students step forward and back through swap, negate and divide, and change the original entries at any point.",
-                        reveals: "Which two entries swap, which two change sign, and that the division by the determinant is part of the answer, not an optional extra.",
-                        targetsMisconception: "Students mix up which entries to swap and which to negate, and forget to divide by the determinant",
-                        recommended: true,
-                    },
-                    {
-                        id: "undo-check",
-                        title: "A checker that multiplies the matrix by its candidate inverse",
-                        looks: "The matrix, a candidate inverse the student assembles, and the product of the two shown as it stands.",
-                        manipulate: "Students choose how to swap, negate and divide, then multiply to see whether the product really is the identity matrix.",
-                        reveals: "Only the correct swap, the correct signs and the division by the determinant give a product that undoes the original.",
-                        targetsMisconception: "Students think the inverse means taking 1 over each entry",
-                    },
-                    {
-                        id: "reciprocal-compare",
-                        title: "The correct inverse against the one-over-each-entry guess",
-                        looks: "Two candidate inverses of the same matrix side by side, each multiplied by the original with both products displayed.",
-                        manipulate: "Students edit the original matrix and compare what each candidate produces.",
-                        reveals: "One over each entry does not undo the matrix, while the swap, negate and divide recipe does.",
-                        targetsMisconception: "Students think the inverse means taking 1 over each entry",
-                    },
-                ]}
-            />
+        <Block id="inverse-visual" padding="sm" hasVisualization>
+            <InverseBuilder />
         </Block>
     </StackLayout>,
 
     <StackLayout key="layout-inverse-summary" maxWidth="xl">
         <Block id="inverse-summary" padding="sm">
             <EditableParagraph id="para-inverse-summary" blockId="inverse-summary">
-                Keep the three moves in that order and check your work by
-                multiplying: a correct inverse always returns the identity
-                matrix. Notice too that the recipe divides by the determinant,
-                which raises an awkward question about matrices whose
-                determinant is zero.
+                Step through swap, negate and divide and watch which entries
+                move and which change sign. The divide step is part of the
+                answer, not an extra: stopping at step 2 leaves a matrix that
+                does not undo anything. Notice too what that step would ask of a
+                matrix whose determinant is zero.
             </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-inverse-practice-heading" maxWidth="xl">
+        <Block id="inverse-practice-heading" padding="sm">
+            <EditableH3 id="h3-inverse-practice-heading" blockId="inverse-practice-heading">
+                Your turn
+            </EditableH3>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-inverse-practice-choice-prompt" maxWidth="xl">
+        <Block id="inverse-practice-choice-prompt" padding="sm">
+            <EditableParagraph
+                id="para-inverse-practice-choice-prompt"
+                blockId="inverse-practice-choice-prompt"
+            >
+                Which of these is the inverse of the matrix with top row{" "}
+                <InlineFormula latex="(3, 5)" /> and bottom row{" "}
+                <InlineFormula latex="(1, 4)" />?
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-inverse-practice-choice" maxWidth="xl">
+        <Block id="inverse-practice-choice" padding="sm">
+            <ChoiceQuestion
+                options={[
+                    {
+                        id: "correct-inverse",
+                        label: (
+                            <InlineFormula latex="\frac{1}{7}\begin{pmatrix} 4 & -5 \\ -1 & 3 \end{pmatrix}" />
+                        ),
+                        correct: true,
+                        feedback:
+                            "Correct. The 3 and 4 swapped, the 5 and 1 changed sign, and every entry was divided by the determinant 7.",
+                    },
+                    {
+                        id: "no-division",
+                        label: <InlineFormula latex="\begin{pmatrix} 4 & -5 \\ -1 & 3 \end{pmatrix}" />,
+                        feedback:
+                            "The swap and the signs are right, but this is the working copy at step 2. Press step 3 in the builder above and see what the divide step still has to do.",
+                    },
+                    {
+                        id: "no-swap",
+                        label: (
+                            <InlineFormula latex="\frac{1}{7}\begin{pmatrix} 3 & -5 \\ -1 & 4 \end{pmatrix}" />
+                        ),
+                        feedback:
+                            "The signs and the division are right, but check which entries move. Press step 1 above and watch which two swap places.",
+                    },
+                    {
+                        id: "reciprocals",
+                        label: (
+                            <InlineFormula latex="\begin{pmatrix} \frac{1}{3} & \frac{1}{5} \\ \frac{1}{1} & \frac{1}{4} \end{pmatrix}" />
+                        ),
+                        feedback:
+                            "That is one over each entry, which is not what an inverse matrix means. Set the builder above to 3, 5, 1, 4 and step through swap, negate and divide instead.",
+                    },
+                ]}
+            />
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-inverse-practice-entry-prompt" maxWidth="xl">
+        <Block id="inverse-practice-entry-prompt" padding="sm">
+            <EditableParagraph
+                id="para-inverse-practice-entry-prompt"
+                blockId="inverse-practice-entry-prompt"
+            >
+                A matrix has top row <InlineFormula latex="(6, 2)" /> and bottom
+                row <InlineFormula latex="(4, 3)" />. What is the top-left entry
+                of its inverse, as a decimal?
+            </EditableParagraph>
+        </Block>
+    </StackLayout>,
+
+    <StackLayout key="layout-inverse-practice-entry" maxWidth="xl">
+        <Block id="inverse-practice-entry" padding="sm">
+            <NumericQuestion
+                answer={0.3}
+                tolerance={0.005}
+                placeholder="Top-left entry"
+                successFeedback="Correct. The 3 moved to the top left and was then divided by the determinant 10, giving 0.3."
+                hints={[
+                    "Find the determinant first, then decide which entry ends up in the top-left position.",
+                    "The determinant is 6 x 3 - 2 x 4 = 10, and the swap sends the 3 to the top left. Now do the divide step.",
+                    "3 divided by 10 is 0.3. Answering 3 means the divide step was skipped. Set the builder above to 6, 2, 4, 3 and press step 3.",
+                ]}
+            />
         </Block>
     </StackLayout>,
 ];
